@@ -7,6 +7,8 @@ There ara many simulation methods including :
 - Priority Scheduling
 - Round-Robin Scheduling 
 
+The current version is only showing results for First Come, First Served Scheduling, so stay tuned for the others.
+
 First you should compile the CPP file to be able to run it, to do so use this command line :
 g++ cpu_simulator.cpp -o schedular
 
