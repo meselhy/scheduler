@@ -124,7 +124,7 @@ getFcfs (int a[], int n)
 {
   int b[n];
   b[0] = 0;
-
+  double summ = 0;
   for (int i = 1; i < n; i++)
     {
       b[i] = b[i - 1] + a[i - 1];
@@ -136,7 +136,9 @@ getFcfs (int a[], int n)
   for (int i = 0; i < n; i++)
     {
       cout << "  " << "P" << i + 1 << "\t\t   " << b[i] << endl;
+      summ += b[i];
     }
+  cout << "\nAverage waiting time = " << summ / n << " ms\n" << endl;
 }
 
 struct node *
