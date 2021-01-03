@@ -7,7 +7,7 @@ There ara many simulation methods including :
 - Priority Scheduling
 - Round-Robin Scheduling 
 
-The current version is only showing results for First Come, First Served Scheduling, so stay tuned for the others.
+The current version is only showing results for First Come First Served Scheduling & Round Robin Scheduling, so stay tuned for the others.
 
 First you should compile the CPP file to be able to run it, to do so use this command line :
 g++ cpu_simulator.cpp -o schedular
@@ -17,5 +17,6 @@ Then use this command to run the file:
 
 Note: there must be input file for the processes in the same folder of the CPP file.
 The input file may contain as many processes as you wish.
+Note: There is an output text file for FCFS Scheduling that prints the results to it, it will be available for RR as well soon.
 
 For any issues feel free to drop me a line.
