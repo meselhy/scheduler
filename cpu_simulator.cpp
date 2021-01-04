@@ -151,9 +151,11 @@ getFcfs (int a[], int n)
   int b[n];
   b[0] = 0;
   double summ = 0;
-  for (int i = 1; i < n; i++)
+  int i = 1;
+  while (i < n)
     {
       b[i] = b[i - 1] + a[i - 1];
+      i++;
     }
 
   printf ("\nProcess\t\tWaiting Time\n");
