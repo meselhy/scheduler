@@ -17,8 +17,8 @@ struct node *createNode (int);
 struct node *insertBack (struct node *, int);
 void display (struct node *);
 int countLenght (struct node *);
-void getFcfs (int a[], int n);
-void getRR(int brst[], int arvl[], int q, int n);
+void getFcfs (int b[], int a[], int n);
+void getRR(int b[], int a[], int q, int n);
 
 
 int
@@ -33,7 +33,8 @@ main ()
      "1. Scheduling Method\n"
      "2. Preemptive Mode N/A\n"
      "3. Non-Preemptive Mode N/A\n"
-     "4. Show Results N/A\n" "5. End Program\n\n");
+     "4. Show Results N/A\n"
+     "5. End Program\n\n");
   scanf ("%d", &x);
 
   FILE *ip;
@@ -63,7 +64,9 @@ main ()
 
       cout << ("Please select scheduling method\n"
          "1. First Come First Served\n"
-         "2. Round Robin N/A\n" "3. Priority N/A\n" "4. SJFS N/A\n\n");
+         "2. Round Robin N/A\n"
+         "3. Priority N/A\n"
+         "4. SJFS N/A\n\n");
       scanf ("%d", &y);
 
       switch (y)
@@ -80,10 +83,19 @@ main ()
     x[i++] = temp->data;
     temp = temp->next;
         }
+      int arv = countLenght (headerArvl);
+      int y[arv];
+      int j = 0;
+      node *temp2 = headerArvl;
+      while (temp2 != NULL)
+        {
+    y[j++] = temp2->data;
+    temp2 = temp2->next;
+        }
 
       int m = sizeof x / sizeof x[brs];
-      cout << " FCFS is selected \n" << endl;
-      getFcfs (x, m);
+      cout << " FCFS Scheduling is selected \n" << endl;
+      getFcfs (x, y, m);
 
     }
     break;
@@ -114,7 +126,7 @@ main ()
       int q;
       cout << " Please enter quantum time \n" << endl;
       scanf ("%d", &q);
-      cout << " Round Robin is selected \n" << endl;
+      cout << " Round Robin Scheduling is selected \n" << endl;
       getRR (x,y,q,k);
       break;
     }
@@ -146,47 +158,49 @@ main ()
 }
 
 void
-getFcfs (int a[], int n)
+getFcfs (int b[], int a[], int n)
 {
-  int b[n];
-  b[0] = 0;
+  int w[n];
+  w[0] = 0;
   double summ = 0;
   int i = 1;
   while (i < n)
     {
-      b[i] = b[i - 1] + a[i - 1];
+      w[i] = w[i - 1] + b[i - 1] - a[i - 2];
       i++;
     }
 
-  printf ("\nProcess\t\tWaiting Time\n");
+  printf ("\nProcess\tWaiting Times:\n");
   FILE *op = fopen ("output.txt", "w");
-  fprintf(op, "Process\t\tWaiting Time\n");
+  fprintf(op, "Process\tWaiting Times:\n");
+
   for (int i = 0; i < n; i++)
     {
-      cout << "  " << "P" << i + 1 << "\t\t   " << b[i] << endl;
-      summ += b[i];
-      fprintf(op, "%s%d\t\t  %d\n","  P",i+1, b[i]);
+      cout << " " << "P" << i + 1 << ": " << w[i] << " ms" << endl;
+      summ += w[i];
+      fprintf(op, "%s%d: %d%s\n"," P",i+1, w[i]," ms");
     }
+
   cout << "\nAverage waiting time = " << summ / n << " ms\n" << endl;
   fprintf(op,"%s%.2f%s", "\nAverage waiting time = ", summ/n, " ms");
   fclose (op);
 }
 
 void
-getRR (int brst[], int arvl[], int q, int n)
+getRR (int b[], int a[], int q, int n)
 {
   int rem[n];
-  int wt[n];
-  int comp[n];
+  int w[n];
+  int fnsh[n];
   int t = 0;
   int arrival = 0;
   double summ = 0;
 
   for (int i = 0; i < n; i++)
     {
-      rem[i] = brst[i];
+      rem[i] = b[i];
     }
-  if (arvl[0] != 0)
+  if (a[0] != 0)
     {
       cout << "Arrival time is incorrect" << endl;
       return;
@@ -201,7 +215,7 @@ getRR (int brst[], int arvl[], int q, int n)
     if (rem[i] > 0)
       {
         tmm = false;
-        if (rem[i] > q && arvl[i] <= arrival)
+        if (rem[i] > q && a[i] <= arrival)
     {
       t += q;
       rem[i] -= q;
@@ -209,12 +223,12 @@ getRR (int brst[], int arvl[], int q, int n)
     }
         else
     {
-      if (arvl[i] <= arrival)
+      if (a[i] <= arrival)
         {
           arrival++;
           t += rem[i];
           rem[i] = 0;
-          comp[i] = t;
+          fnsh[i] = t;
         }
     }
       }
@@ -225,15 +239,21 @@ getRR (int brst[], int arvl[], int q, int n)
     }
   for (int i = 0; i < n; i++)
     {
-      wt[i] = comp[i] - arvl[i] - brst[i];
+      w[i] = fnsh[i] - a[i] - b[i];
     }
-  printf ("\nProcess\t\tWaiting Time\n");
+  printf ("\nProcess\tWaiting Times:\n");
+  FILE *op = fopen ("output.txt", "w");
+  fprintf(op, "Process\tWaiting Times:\n");
+
   for (int i = 0; i < n; i++)
     {
-      cout << "  " << "P" << i + 1 << "\t\t   " << wt[i] << endl;
-      summ += wt[i];
+      cout << " " << "P" << i + 1 << ": " << w[i] << " ms" << endl;
+      summ += w[i];
+      fprintf(op, "%s%d: %d%s\n"," P",i+1, w[i]," ms");
     }
   cout << "\nAverage waiting time = " << summ / n << " ms\n" << endl;
+  fprintf(op,"%s%.2f%s", "\nAverage waiting time = ", summ/n, " ms");
+  fclose (op);
 }
 
 struct node *
