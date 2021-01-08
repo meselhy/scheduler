@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cstdlib>
+#include <ctype.h>
+#include <unistd.h>
 #define LINE_MAX 1024
 
 using namespace std;
@@ -18,12 +20,51 @@ struct node *insertBack (struct node *, int);
 void display (struct node *);
 int countLenght (struct node *);
 void getFcfs (int b[], int a[], int n);
-void getRR(int b[], int a[], int q, int n);
+void getRR (int b[], int a[], int q, int n);
 
 
 int
-main ()
+main (int argc, char **argv)
 {
+  int aflag = 0;
+  int bflag = 0;
+  char *cvalue = NULL;
+  int index;
+  int c;
+  static char usage[] = "usage: %s [-fo] -f fname -o oname \n";
+
+  opterr = 0;
+
+  while ((c = getopt (argc, argv, "foc:")) != -1)
+    switch (c)
+      {
+      case 'f':
+  FILE * ip;
+  if ((ip = fopen ("input.txt", "r")) == NULL)
+    {
+      cout << " ABRACADABRA, no input file , exiting ..." << endl;
+      return 0;
+    }
+
+      case 'o':
+  FILE * op;
+  if ((op = fopen ("output.txt", "w")) == NULL)
+    {
+      cout << " Warning!, no output file " << endl;
+    }
+
+  break;
+      case '?':
+  if (optopt == 'c')
+    cout << "Option -%c requires an argument.\n" << endl;
+  else if (isprint (optopt))
+    cout << " ABRACADABRA `-%c'.\n" << endl;
+  else
+    cout << " ABRACADABRA `\\x%x'.\n" << endl;
+  return 1;
+      default:
+  abort ();
+      }
 
   int x;
   int y;
@@ -47,6 +88,7 @@ main ()
   if ((ip = fopen ("input.txt", "r")) == NULL)
     {
       cout << " ABRACADABRA, no input file , exiting ..." << endl;
+      return 0;
     }
 
   while (fgets (line, LINE_MAX, ip) != NULL)
@@ -64,8 +106,8 @@ main ()
 
       cout << ("Please select scheduling method\n"
          "1. First Come First Served\n"
-         "2. Round Robin N/A\n"
-         "3. Priority N/A\n"
+         "2. Round Robin \n" 
+         "3. Priority N/A\n" 
          "4. SJFS N/A\n\n");
       scanf ("%d", &y);
 
@@ -127,7 +169,7 @@ main ()
       cout << " Please enter quantum time \n" << endl;
       scanf ("%d", &q);
       cout << " Round Robin Scheduling is selected \n" << endl;
-      getRR (x,y,q,k);
+      getRR (x, y, q, k);
       break;
     }
   case 3:
@@ -146,6 +188,7 @@ main ()
   if (x == 3 || x == 4)
     {
       cout << "ABRACADABRA\n" << endl;
+      return 0;
     }
 
   if (x == 5)
@@ -172,17 +215,17 @@ getFcfs (int b[], int a[], int n)
 
   printf ("\nProcess\tWaiting Times:\n");
   FILE *op = fopen ("output.txt", "w");
-  fprintf(op, "Process\tWaiting Times:\n");
+  fprintf (op, "Process\tWaiting Times:\n");
 
   for (int i = 0; i < n; i++)
     {
       cout << " " << "P" << i + 1 << ": " << w[i] << " ms" << endl;
       summ += w[i];
-      fprintf(op, "%s%d: %d%s\n"," P",i+1, w[i]," ms");
+      fprintf (op, "%s%d: %d%s\n", " P", i + 1, w[i], " ms");
     }
 
   cout << "\nAverage waiting time = " << summ / n << " ms\n" << endl;
-  fprintf(op,"%s%.2f%s", "\nAverage waiting time = ", summ/n, " ms");
+  fprintf (op, "%s%.2f%s", "\nAverage waiting time = ", summ / n, " ms");
   fclose (op);
 }
 
@@ -243,16 +286,16 @@ getRR (int b[], int a[], int q, int n)
     }
   printf ("\nProcess\tWaiting Times:\n");
   FILE *op = fopen ("output.txt", "w");
-  fprintf(op, "Process\tWaiting Times:\n");
+  fprintf (op, "Process\tWaiting Times:\n");
 
   for (int i = 0; i < n; i++)
     {
       cout << " " << "P" << i + 1 << ": " << w[i] << " ms" << endl;
       summ += w[i];
-      fprintf(op, "%s%d: %d%s\n"," P",i+1, w[i]," ms");
+      fprintf (op, "%s%d: %d%s\n", " P", i + 1, w[i], " ms");
     }
   cout << "\nAverage waiting time = " << summ / n << " ms\n" << endl;
-  fprintf(op,"%s%.2f%s", "\nAverage waiting time = ", summ/n, " ms");
+  fprintf (op, "%s%.2f%s", "\nAverage waiting time = ", summ / n, " ms");
   fclose (op);
 }
 
@@ -299,7 +342,7 @@ display (struct node *header)
 
   while (temp != NULL)
     {
-      cout << temp->data << " --> ";
+      cout << temp->data << " ";
       temp = temp->next;
     }
   cout << endl;
